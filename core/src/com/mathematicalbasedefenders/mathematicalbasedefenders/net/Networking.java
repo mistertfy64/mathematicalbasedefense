@@ -65,6 +65,11 @@ public class Networking {
                             currentLoggedInUser = username;
                             userIDOfCurrentlyLoggedInUser = userID;
 
+                            JSONObject online = MathematicalBaseDefenders.core.configurationAsJSONObject.getJSONObject("online");
+                            online.put("username", username);
+                            online.put("password", MathematicalBaseDefenders.utilities.encodeWithBase64(MathematicalBaseDefenders.core.passwordTextField.getText(), 4));
+
+                            loggedIn = true;
 
                             Log.logInfoMessage("Successfully logged in as " + username + "!");
                             break;
@@ -103,6 +108,14 @@ public class Networking {
                             if (rank != -1) {
                                 MathematicalBaseDefenders.core.toastNotificationQueue.add("You ranked #" + rank + " on the global leaderboards!");
                             }
+
+                            boolean personalBestBroken = jsonObject.getBoolean("personalBestBroken");
+
+                            if (personalBestBroken) {
+                                MathematicalBaseDefenders.core.toastNotificationQueue.add("New personal best!");
+                            }
+
+
 
 
                             break;

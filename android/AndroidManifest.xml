@@ -10,7 +10,7 @@
             android:label="@string/app_name"
             android:theme="@style/GdxTheme">
         <activity
-                android:name="com.mathematicalbasedefenders.mathematicalbasedefenders.com.mathematicalbasedefense.mathematicalbasedefenders.AndroidLauncher"
+                android:name="com.mathematicalbasedefenders.mathematicalbasedefenders.com.mathematicalbasedefenders.mathematicalbasedefenders.AndroidLauncher"
                 android:label="@string/app_name"
                 android:screenOrientation="landscape"
                 android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout">

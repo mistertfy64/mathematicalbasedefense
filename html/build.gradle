@@ -4,8 +4,8 @@ gwt {
     minHeapSize="1G"
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
-    modules 'com.mathematicalbasedefense.mathematicalbasedefense.GdxDefinition'
-    devModules 'com.mathematicalbasedefense.mathematicalbasedefense.GdxDefinitionSuperdev'
+    modules 'com.mathematicalbasedefenders.mathematicalbasedefenders.GdxDefinition'
+    devModules 'com.mathematicalbasedefenders.mathematicalbasedefenders.GdxDefinitionSuperdev'
     project.webAppDirName = 'webapp'
 
     compiler {

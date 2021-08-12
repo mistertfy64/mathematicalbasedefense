@@ -9,8 +9,7 @@ public class Generator {
 
     public int[] bagQuantities = new int[23];
     public ArrayList<Integer> indexesOfAvailableTerms = new ArrayList<>();
-    public final int[] INITIAL_BAG_QUANTITIES = new int[]{4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1};
-    //0 1 2 3 4 5 6 7 8 9 + - * / = a b c d n x y z
+    public final int[] INITIAL_BAG_QUANTITIES = new int[]{4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0};
     public int totalRemainingBagQuantities = 0;
 
     public void resetBag() {
@@ -20,6 +19,12 @@ public class Generator {
         for (int i = 0; i < bagQuantities.length; i++) {
             bagQuantities[i] = INITIAL_BAG_QUANTITIES[i];
             indexesOfAvailableTerms.add(i);
+        }
+
+        for (int i = 0; i < bagQuantities.length; i++) {
+            if (bagQuantities[i] == 0) {
+                indexesOfAvailableTerms.remove((Integer) i);
+            }
         }
 
     }

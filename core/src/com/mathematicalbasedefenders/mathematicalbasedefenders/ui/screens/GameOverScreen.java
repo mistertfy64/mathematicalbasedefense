@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mathematicalbasedefenders.mathematicalbasedefenders.MathematicalBaseDefenders;
 import com.mathematicalbasedefenders.mathematicalbasedefenders.core.Core;
@@ -23,8 +21,8 @@ public class GameOverScreen implements Screen {
     private final Stage gameOverScreenTextStage;
 
 
-    public GameOverScreen(MathematicalBaseDefenders mathematicalBaseDefenders) {
-        this.mathematicalBaseDefenders = mathematicalBaseDefenders;
+    public GameOverScreen(MathematicalBaseDefenders mathematicalBaseDefendersInstance) {
+        this.mathematicalBaseDefenders = mathematicalBaseDefendersInstance;
 
         MathematicalBaseDefenders.core.currentScreen = Core.GameScreen.GAME_OVER_SCREEN;
 
@@ -34,18 +32,29 @@ public class GameOverScreen implements Screen {
         // stage
         gameOverScreenStage = new Stage(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
         gameOverScreenStage.setViewport(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
-        gameOverScreenStage.getCamera().position.set(1920 / 2, 1080 / 2, 0);
+        gameOverScreenStage.getCamera().position.set(960, 540, 0);
         // text stage
         gameOverScreenTextStage = new Stage(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
         gameOverScreenTextStage.setViewport(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
-        gameOverScreenTextStage.getCamera().position.set(1920 / 2, 1080 / 2, 0);
+        gameOverScreenTextStage.getCamera().position.set(960, 540, 0);
         // global stage
         MathematicalBaseDefenders.core.globalStage = new Stage(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
         MathematicalBaseDefenders.core.globalStage.setViewport(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
-        MathematicalBaseDefenders.core.globalStage.getCamera().position.set(1920 / 2, 1080 / 2, 0);
+        MathematicalBaseDefenders.core.globalStage.getCamera().position.set(960, 540, 0);
 
         MathematicalBaseDefenders.core.currentStageToDrawOn = gameOverScreenStage;
         MathematicalBaseDefenders.core.currentTextStageToDrawOn = gameOverScreenTextStage;
+
+
+
+
+        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage(Double.toString(MathematicalBaseDefenders.game.score), "finalScoreText", 72, Color.BLACK, 1536 - MathematicalBaseDefenders.renderer.getWidthOfText(Double.toString((MathematicalBaseDefenders.game.score)), 72), 900);
+        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Score", "scoreText", 36, Color.BLACK, 384, 900);
+        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Time: " + MathematicalBaseDefenders.utilities.convertMillisecondsToColonifiedTime(MathematicalBaseDefenders.game.finalTimeElapsedInMilliseconds), "timeText", 36, Color.BLACK, 384, 850);
+
+
+        MathematicalBaseDefenders.renderer.addActorToCurrentStage(MathematicalBaseDefenders.core.gameOverPlayAgainButton, "gameOverPlayAgainButton");
+        MathematicalBaseDefenders.renderer.addActorToCurrentStage(MathematicalBaseDefenders.core.gameOverBackButton, "gameOverBackButton");
 
 
     }
@@ -57,32 +66,7 @@ public class GameOverScreen implements Screen {
 
         MathematicalBaseDefenders.core.currentScreen = Core.GameScreen.GAME_OVER_SCREEN;
 
-        MathematicalBaseDefenders.core.gameOverPlayAgainButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                mathematicalBaseDefenders.setScreen(new SingleplayerGameScreen(mathematicalBaseDefenders));
-                MathematicalBaseDefenders.core.currentScreen = Core.GameScreen.SINGLEPLAYER_SCREEN;
-                MathematicalBaseDefenders.game.startSingleplayerGame();
-            }
-        });
 
-        MathematicalBaseDefenders.core.gameOverBackButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                mathematicalBaseDefenders.setScreen(new MainMenuScreen(mathematicalBaseDefenders));
-                MathematicalBaseDefenders.core.currentScreen = Core.GameScreen.SINGLEPLAYER_SCREEN;
-                MathematicalBaseDefenders.game.startSingleplayerGame();
-            }
-        });
-
-
-        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage(Double.toString(MathematicalBaseDefenders.game.score), "finalScoreText", 72, Color.BLACK, 1536 - MathematicalBaseDefenders.renderer.getWidthOfText(Double.toString((MathematicalBaseDefenders.game.score)), 72), 900);
-        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Score", "scoreText", 36, Color.BLACK, 384, 900);
-        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Time: " + MathematicalBaseDefenders.utilities.convertMillisecondsToColonifiedTime(MathematicalBaseDefenders.game.finalTimeElapsedInMilliseconds), "timeText", 36, Color.BLACK, 384, 850);
-
-
-        MathematicalBaseDefenders.renderer.addActorToCurrentStage(MathematicalBaseDefenders.core.gameOverPlayAgainButton, "gameOverPlayAgainButton");
-        MathematicalBaseDefenders.renderer.addActorToCurrentStage(MathematicalBaseDefenders.core.gameOverBackButton, "gameOverBackButton");
 
 
     }
@@ -104,14 +88,15 @@ public class GameOverScreen implements Screen {
 
         // process global logic
 
+        MathematicalBaseDefenders.core.processGlobalLogic();
 
         // process logic
-
+        MathematicalBaseDefenders.core.globalStage.act();
 
         // draw stuff
         gameOverScreenStage.draw();
         gameOverScreenTextStage.draw();
-        MathematicalBaseDefenders.core.globalStage.act();
+        MathematicalBaseDefenders.core.globalStage.draw();
 
         // make stuff end
         gameOverScreenSpriteBatch.end();

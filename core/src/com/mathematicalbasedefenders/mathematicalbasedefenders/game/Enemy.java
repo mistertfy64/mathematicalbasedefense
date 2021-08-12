@@ -11,8 +11,6 @@ import com.mathematicalbasedefenders.mathematicalbasedefenders.core.Log;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static com.badlogic.gdx.graphics.Color.rgba8888;
-
 
 public class Enemy {
 
@@ -40,8 +38,8 @@ public class Enemy {
         enemyNumber++;
         MathematicalBaseDefenders.game.enemiesSpawned++;
 
-        MathematicalBaseDefenders.game.activeEnemies.put(enemyNumber, this);
-        MathematicalBaseDefenders.game.activeEnemiesAsTextures.put(enemyNumber, null);
+        Game.activeEnemies.put(enemyNumber, this);
+        Game.activeEnemiesAsTextures.put(enemyNumber, null);
 
     }
 
@@ -60,8 +58,8 @@ public class Enemy {
         MathematicalBaseDefenders.game.enemiesSpawned++;
 
 
-        MathematicalBaseDefenders.game.activeEnemies.put(enemyNumber, this);
-        MathematicalBaseDefenders.game.activeEnemiesAsTextures.put(enemyNumber, null);
+        Game.activeEnemies.put(enemyNumber, this);
+        Game.activeEnemiesAsTextures.put(enemyNumber, null);
 
     }
 
@@ -74,7 +72,7 @@ public class Enemy {
      */
     public void move() {
         this.xPosition -= defaultMoveSpeed;
-        this.spacePosition = xPosition > 1900 ? 10 : (xPosition - 100) / 180;
+        this.spacePosition = xPosition > 1800 ? 10 : (xPosition - 100) / 170;
         // System.out.println("Enemy #" + this.enemyNumber + "'s x position is now " + xPosition);
     }
 
@@ -85,17 +83,25 @@ public class Enemy {
      */
     public void move(float pixels) {
         this.xPosition -= pixels;
+        this.spacePosition = xPosition > 1800 ? 10 : (xPosition - 100) / 170;
     }
 
 
     /**
      * Renders the enemy.
      */
-    public void render() {
+    public void render(long enemyNumber) {
         Pixmap pixmap = new Pixmap((int) this.width, (int) this.height, Format.RGBA8888);
         pixmap.setColor(this.color);
         pixmap.fillRectangle(0, 0, (int) this.width, (int) this.height);
-        MathematicalBaseDefenders.core.currentSpriteBatchToDrawOn.draw(this.addSpecialComputerModernFont(pixmap, this.requestedValue, 3, MathematicalBaseDefenders.utilities.rgbToHSL(this.getColor().r, this.getColor().g, this.getColor().b)[2] > 0.5 ? Color.BLACK : Color.WHITE), this.xPosition, this.yPosition, this.width, this.height);
+
+        if (Game.activeEnemiesAsTextures.containsKey(enemyNumber)) {
+            if (Game.activeEnemiesAsTextures.get(enemyNumber) == null) {
+                Game.activeEnemiesAsTextures.put(enemyNumber, this.addSpecialComputerModernFont(pixmap, this.requestedValue, 3, MathematicalBaseDefenders.utilities.rgbToHSL(this.getColor().r, this.getColor().g, this.getColor().b)[2] > 0.5 ? Color.BLACK : Color.WHITE));
+            }
+            MathematicalBaseDefenders.core.currentSpriteBatchToDrawOn.draw(Game.activeEnemiesAsTextures.get(enemyNumber), this.xPosition, this.yPosition, this.width, this.height);
+        }
+
 
         pixmap.dispose();
     }
@@ -135,16 +141,10 @@ public class Enemy {
         Pixmap specialComputerModernFontPixmap = new Pixmap(initialTotalWidth, text.contains("y") ? (int) this.height + 23 : (int) this.height, Format.RGBA8888);
         for (int i = 0; i < text.length(); i++) {
 
-            Pixmap specialComputerModernFontPixmap2 = new Pixmap(textureRegionsAsPixmaps.get(i).getWidth(), textureRegionsAsPixmaps.get(i).getHeight(), Format.RGBA8888);
-            for (int x = 0; x < textureRegionsAsPixmaps.get(i).getWidth(); x++) {
-                for (int y = 0; y < textureRegionsAsPixmaps.get(i).getHeight(); y++) {
+            Pixmap currentSpecialComputerModernFontPixmap = textureRegionsAsPixmaps.get(i);
 
-                    if ((textureRegionsAsPixmaps.get(i).getPixel(x, y) & 0x000000ff) != 0x00) {
-                        specialComputerModernFontPixmap2.drawPixel(x, y, rgba8888(specialComputerModernFontColor));
-                    }
-
-                }
-            }
+            Pixmap specialComputerModernFontPixmap2 = new Pixmap(currentSpecialComputerModernFontPixmap.getWidth(), currentSpecialComputerModernFontPixmap.getHeight(), Format.RGBA8888);
+            specialComputerModernFontPixmap2.drawPixmap(currentSpecialComputerModernFontPixmap, 0, 0);
 
             int yCoordinateToDrawAt = 0;
 
@@ -158,7 +158,7 @@ public class Enemy {
 
 
             specialComputerModernFontPixmap.drawPixmap(specialComputerModernFontPixmap2, totalWidth, yCoordinateToDrawAt);
-            totalWidth += textureRegionsAsPixmaps.get(i).getWidth() + spacing;
+            totalWidth += specialComputerModernFontPixmap2.getWidth() + spacing;
             specialComputerModernFontPixmap2.dispose();
         }
 
@@ -176,6 +176,8 @@ public class Enemy {
 
 
         textureToReturn.draw(pixmapToReturn, 0, 0);
+
+        textureToReturn.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         specialComputerModernFontPixmap.dispose();
         pixmapToReturn.dispose();
@@ -199,24 +201,16 @@ public class Enemy {
     public String generateRequestedValue() {
         Random random = new Random();
         double roll = Math.random();
-        if (roll < 0.75) {
-            return Integer.toString((Math.random() < 0.5 ? -1 : 1) * random.nextInt(1000));
-        } else if (roll < 0.78125) {
-            return (Math.random() < 0.5 ? -1 : 1) * random.nextInt(1000) + "a";
-        } else if (roll < 0.81250) {
-            return (Math.random() < 0.5 ? -1 : 1) * random.nextInt(1000) + "b";
-        } else if (roll < 0.84375) {
-            return (Math.random() < 0.5 ? -1 : 1) * random.nextInt(1000) + "c";
-        } else if (roll < 0.87500) {
-            return (Math.random() < 0.5 ? -1 : 1) * random.nextInt(1000) + "d";
+        if (roll < 0.875) {
+            return Integer.toString((Math.random() < 0.8 ? 1 : -1) * random.nextInt(1000));
         } else if (roll < 0.90625) {
-            return (Math.random() < 0.5 ? -1 : 1) * random.nextInt(1000) + "n";
+            return (Math.random() < 0.8 ? 1 : -1) * random.nextInt(1000) + "a";
         } else if (roll < 0.93750) {
-            return (Math.random() < 0.5 ? -1 : 1) * random.nextInt(1000) + "x";
+            return (Math.random() < 0.8 ? 1 : -1) * random.nextInt(1000) + "b";
         } else if (roll < 0.96875) {
-            return (Math.random() < 0.5 ? -1 : 1) * random.nextInt(1000) + "y";
+            return (Math.random() < 0.8 ? 1 : -1) * random.nextInt(1000) + "c";
         } else {
-            return (Math.random() < 0.5 ? -1 : 1) * random.nextInt(1000) + "z";
+            return (Math.random() < 0.8 ? 1 : -1) * random.nextInt(1000) + "d";
         }
     }
 

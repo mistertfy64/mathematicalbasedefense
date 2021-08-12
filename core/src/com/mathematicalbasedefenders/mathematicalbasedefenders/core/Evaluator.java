@@ -1,6 +1,8 @@
 package com.mathematicalbasedefenders.mathematicalbasedefenders.core;
 
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mathematicalbasedefenders.mathematicalbasedefenders.MathematicalBaseDefenders;
+import com.mathematicalbasedefenders.mathematicalbasedefenders.game.Game;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 
@@ -19,47 +21,63 @@ public class Evaluator {
 
             rawProblem = problem;
 
-            problem = problem.replaceAll("a", "v1");
-            problem = problem.replaceAll("b", "v2");
-            problem = problem.replaceAll("c", "v3");
-            problem = problem.replaceAll("d", "v4");
-            problem = problem.replaceAll("n", "v5");
-            problem = problem.replaceAll("x", "v6");
-            problem = problem.replaceAll("y", "v7");
-            problem = problem.replaceAll("z", "v8");
-            problem = problem.replaceAll("v1", "valueOfVariableA");
-            problem = problem.replaceAll("v2", "valueOfVariableB");
-            problem = problem.replaceAll("v3", "valueOfVariableC");
-            problem = problem.replaceAll("v4", "valueOfVariableD");
-            problem = problem.replaceAll("v5", "valueOfVariableN");
-            problem = problem.replaceAll("v6", "valueOfVariableX");
-            problem = problem.replaceAll("v7", "valueOfVariableY");
-            problem = problem.replaceAll("v8", "valueOfVariableZ");
+            problem = problem.replaceAll("a", "v1vl");
+            problem = problem.replaceAll("b", "v2vl");
+            problem = problem.replaceAll("c", "v3vl");
+            problem = problem.replaceAll("d", "v4vl");
+            problem = problem.replaceAll("n", "v5vl");
+            problem = problem.replaceAll("x", "v6vl");
+            problem = problem.replaceAll("y", "v7vl");
+            problem = problem.replaceAll("z", "v8vl");
+
+
+            problem = problem.replaceAll("([^\\d])*\\*?v1vl", "*v1vl");
+            problem = problem.replaceAll("([^\\d])*\\*?v2vl", "*v2vl");
+            problem = problem.replaceAll("([^\\d])*\\*?v3vl", "*v3vl");
+            problem = problem.replaceAll("([^\\d])*\\*?v4vl", "*v4vl");
+            problem = problem.replaceAll("([^\\d])*\\*?v5vl", "*v5vl");
+            problem = problem.replaceAll("([^\\d])*\\*?v6vl", "*v6vl");
+            problem = problem.replaceAll("([^\\d])*\\*?v7vl", "*v7vl");
+            problem = problem.replaceAll("([^\\d])*\\*?v8vl", "*v8vl");
+
+            problem = problem.replaceAll("l([0-9])", "l*$1");
+
+
+            problem = problem.replaceAll("v1vl", "valueOfVariableA");
+            problem = problem.replaceAll("v2vl", "valueOfVariableB");
+            problem = problem.replaceAll("v3vl", "valueOfVariableC");
+            problem = problem.replaceAll("v4vl", "valueOfVariableD");
+            problem = problem.replaceAll("v5vl", "valueOfVariableN");
+            problem = problem.replaceAll("v6vl", "valueOfVariableX");
+            problem = problem.replaceAll("v7vl", "valueOfVariableY");
+            problem = problem.replaceAll("v8vl", "valueOfVariableZ");
+
 
             float result = (float) new Expression(problem, MathematicalBaseDefenders.game.valueOfVariableA, MathematicalBaseDefenders.game.valueOfVariableB, MathematicalBaseDefenders.game.valueOfVariableC, MathematicalBaseDefenders.game.valueOfVariableD, MathematicalBaseDefenders.game.valueOfVariableN, MathematicalBaseDefenders.game.valueOfVariableX, MathematicalBaseDefenders.game.valueOfVariableY, MathematicalBaseDefenders.game.valueOfVariableZ).calculate();
             int solutions = 0;
 
-            Long[] enemyNumbersOfEnemiesToRenderAsLongArray = MathematicalBaseDefenders.core.getEnemyNumbersToRender(MathematicalBaseDefenders.game.activeEnemies.keySet());
-            for (int i = 0; i < enemyNumbersOfEnemiesToRenderAsLongArray.length; i++) {
+
+            Long[] enemyNumbersOfEnemiesToRenderAsLongArray = MathematicalBaseDefenders.core.getEnemyNumbersToRender(Game.activeEnemies.keySet());
+            for (Long aLong : enemyNumbersOfEnemiesToRenderAsLongArray) {
                 try {
-                    if (result == new Expression(MathematicalBaseDefenders.game.activeEnemies.get(enemyNumbersOfEnemiesToRenderAsLongArray[i]).getRequestedValue()).calculate() || rawProblem.equals(MathematicalBaseDefenders.game.activeEnemies.get(enemyNumbersOfEnemiesToRenderAsLongArray[i]).getRequestedValue())) {
+                    if (result == new Expression(Game.activeEnemies.get(aLong).getRequestedValue()).calculate() || rawProblem.equals(Game.activeEnemies.get(aLong).getRequestedValue())) {
 
                         solutions++;
                         solutionFound = true;
                     }
                 } catch (Exception exception) {
-                    Log.logWarningMessage("Enemy #" + enemyNumbersOfEnemiesToRenderAsLongArray[i] + " produced an exception while checking problem.");
+                    Log.logWarningMessage("Enemy #" + aLong + " produced an exception while checking problem.");
                 }
             }
 
-            for (int i = 0; i < enemyNumbersOfEnemiesToRenderAsLongArray.length; i++) {
+            for (Long aLong : enemyNumbersOfEnemiesToRenderAsLongArray) {
                 try {
-                    if (result == new Expression(MathematicalBaseDefenders.game.activeEnemies.get(enemyNumbersOfEnemiesToRenderAsLongArray[i]).getRequestedValue()).calculate() || rawProblem.equals(MathematicalBaseDefenders.game.activeEnemies.get(enemyNumbersOfEnemiesToRenderAsLongArray[i]).getRequestedValue())) {
+                    if (result == new Expression(Game.activeEnemies.get(aLong).getRequestedValue()).calculate() || rawProblem.equals(Game.activeEnemies.get(aLong).getRequestedValue())) {
 
 
                         /*
                          *
-                         * 100*f(l)*(1.1^(c-1))*g(s)
+                         * 100*f(l)*(1.1^(max(c,0)-1))*g(s)
                          *
                          *
                          *        |  1 if l < 7
@@ -67,37 +85,34 @@ public class Evaluator {
                          *        |  1+0.2(l-9) if 14 <= l
                          *
                          *
-                         * g(s) = 1 if s < 10, 1*floor(s-9) if otherwise
-                         *
-                         *
-                         *
-                         *
+                         * g(s) = 1 if s < 5, 1*floor(s-5) if otherwise
                          *
                          *
                          */
 
                         double multiplier = 1;
                         // calculate multiplier
-                        if (problem.length() < 7) {
-                            multiplier = 1;
-                        } else if (problem.length() >= 7 && problem.length() <= 13) {
+                        if (problem.length() >= 7 && problem.length() <= 13) {
                             multiplier = 1 + 0.1 * (problem.length() - 6);
-                        } else {
+                        } else if (14 <= problem.length()) {
                             multiplier = 1 + 0.2 * (problem.length() - 9);
                         }
 
                         double m1 = (multiplier);
-                        double m2 = (Math.pow(1.1, solutions));
-                        double m3 = (MathematicalBaseDefenders.game.activeEnemies.get(enemyNumbersOfEnemiesToRenderAsLongArray[i]).getSpacePosition() < 10 ? 1 : 1 + (0.1 * Math.floor(MathematicalBaseDefenders.game.activeEnemies.get(enemyNumbersOfEnemiesToRenderAsLongArray[i]).getSpacePosition() - 10)));
+                        double m2 = (Math.pow(1.1, Math.max(MathematicalBaseDefenders.game.currentCombo, 0)));
+                        double m3 = (Game.activeEnemies.get(aLong).getSpacePosition() < 5 ? 1 : 1 + (0.1 * Math.floor(Game.activeEnemies.get(aLong).getSpacePosition() - 5)));
 
-                        MathematicalBaseDefenders.game.score += 100 * m1 * m2 * m3;
+                        MathematicalBaseDefenders.game.score += Math.round(100 * m1 * m2 * m3);
                         MathematicalBaseDefenders.game.enemiesKilled++;
+                        MathematicalBaseDefenders.game.currentCombo++;
+                        MathematicalBaseDefenders.game.timeOfLastEnemyKill = TimeUtils.millis();
+
                         solutionFound = true;
 
-                        MathematicalBaseDefenders.game.activeEnemies.remove(enemyNumbersOfEnemiesToRenderAsLongArray[i]);
+                        Game.activeEnemies.remove(aLong);
                     }
                 } catch (Exception exception) {
-                    Log.logWarningMessage("Enemy #" + enemyNumbersOfEnemiesToRenderAsLongArray[i] + " produced an exception while checking problem.");
+                    Log.logWarningMessage("Enemy #" + aLong + " produced an exception while checking problem.");
                 }
             }
 
@@ -121,8 +136,6 @@ public class Evaluator {
             }
 
             if (totalVariables == 1) {
-                String problemOnLeftSide = problem.substring(0, equalSignIndex);
-                String problemOnRightSide = problem.substring(equalSignIndex + 1);
 
                 for (int i = 0; i < problem.length(); i++) {
                     if (problem.charAt(i) == 'a' || problem.charAt(i) == 'b' || problem.charAt(i) == 'c' || problem.charAt(i) == 'd' || problem.charAt(i) == 'n' || problem.charAt(i) == 'x' || problem.charAt(i) == 'y' || problem.charAt(i) == 'z') {

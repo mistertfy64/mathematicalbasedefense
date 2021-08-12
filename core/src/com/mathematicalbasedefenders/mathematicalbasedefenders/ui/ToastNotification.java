@@ -16,6 +16,7 @@ public class ToastNotification {
 
     public ToastNotification(String text) {
 
+
         toastNotificationNumber++;
 
         int fontSize = 20;
@@ -25,7 +26,7 @@ public class ToastNotification {
         }
 
 
-        textButton = new TextButton(text, new TextButton.TextButtonStyle(MathematicalBaseDefenders.core.toastNotificationBackground, MathematicalBaseDefenders.core.toastNotificationBackground, MathematicalBaseDefenders.core.toastNotificationBackground, MathematicalBaseDefenders.core.createNewComputerModernFont(fontSize)));
+        textButton = new TextButton(text, new TextButton.TextButtonStyle(MathematicalBaseDefenders.core.toastNotificationBackground, MathematicalBaseDefenders.core.toastNotificationBackground, MathematicalBaseDefenders.core.toastNotificationBackground, MathematicalBaseDefenders.core.createOrGetNewComputerModernFont(fontSize)));
         textButton.setPosition(1552, -56);
 
         age = 0;
@@ -33,7 +34,6 @@ public class ToastNotification {
         MathematicalBaseDefenders.renderer.addActorToGlobalStage(textButton, "toastNotification" + toastNotificationNumber);
 
         textButton.addAction(Actions.moveBy(0, 64, 0.2f));
-
 
         for (int i = 0; i < activeToastNotifications.size(); i++) {
             activeToastNotifications.get(i).getBody().addAction(Actions.moveBy(0, 64, 0.2f));
@@ -78,4 +78,5 @@ public class ToastNotification {
     public static void setToastNotificationNumber(long toastNotificationNumber) {
         ToastNotification.toastNotificationNumber = toastNotificationNumber;
     }
+
 }

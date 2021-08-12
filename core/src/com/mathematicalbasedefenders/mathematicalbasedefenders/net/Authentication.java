@@ -12,8 +12,8 @@ public class Authentication {
 
         core.toastNotificationQueue.add("Authenticating...");
 
-
-        MathematicalBaseDefenders.networking.socket.emit("authenticate", username, password);
+        String encodedPassword = MathematicalBaseDefenders.utilities.encodeWithBase64(password, 4);
+        MathematicalBaseDefenders.networking.socket.emit("authenticate", username, encodedPassword);
 
 
         return false;

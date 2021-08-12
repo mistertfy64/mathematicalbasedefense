@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.mathematicalbasedefenders.mathematicalbasedefenders.MathematicalBaseDefenders;
-import com.mathematicalbasedefenders.mathematicalbasedefenders.ui.ToastNotification;
 
 import static com.mathematicalbasedefenders.mathematicalbasedefenders.MathematicalBaseDefenders.core;
 
@@ -325,7 +324,11 @@ public class Renderer {
 
             for (int i = 0; i < pixmaps.length; i++) {
 
-                Image image = new Image(new Texture(pixmaps[i]));
+                Texture texture = (new Texture(pixmaps[i]));
+                texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+                Image image = new Image(texture);
+
                 float realYPos = yPos;
 
                 if (indexes[i] == 11) {
@@ -337,6 +340,8 @@ public class Renderer {
                 }
 
                 image.setPosition(changeSpacing ? totalWidth + xPos : totalWidth + xPos + 10 * i, realYPos);
+
+
                 totalWidth += image.getWidth();
                 if (changeSpacing) {
                     totalWidth += 5;
@@ -530,7 +535,7 @@ public class Renderer {
         if (size == 12 || size == 16 || size == 24 || size == 32 || size == 36 || size == 48 || size == 64 || size == 72) {
             glyphLayout = new GlyphLayout(fontToUse, text);
         } else {
-            glyphLayout = new GlyphLayout(MathematicalBaseDefenders.core.createNewComputerModernFont(size), text);
+            glyphLayout = new GlyphLayout(MathematicalBaseDefenders.core.createOrGetNewComputerModernFont(size), text);
         }
 
 
@@ -539,7 +544,7 @@ public class Renderer {
 
 
     public void createNewToastNotification(String text) {
-        new ToastNotification(text);
+        MathematicalBaseDefenders.core.toastNotificationQueue.add(text);
     }
 
 

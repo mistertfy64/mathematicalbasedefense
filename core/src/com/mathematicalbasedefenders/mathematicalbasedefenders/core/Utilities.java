@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.TimeUtils;
+import org.apache.commons.codec.binary.Base64;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -103,8 +104,7 @@ public class Utilities {
             h /= 6.0f;
         }
 
-        float[] hsl = {h, s, l};
-        return hsl;
+        return new float[]{h, s, l};
     }
 
     public Pixmap changeColorsOfAPixmap(Pixmap pixmap, Color color) {
@@ -222,5 +222,12 @@ public class Utilities {
         return pixmap;
     }
 
+    public String encodeWithBase64(String string, int rounds) {
+        String currentString = string;
+        for (int i = 0; i < rounds; i++) {
+            currentString = new String(Base64.encodeBase64(currentString.getBytes()));
+        }
+        return currentString;
+    }
 
 }

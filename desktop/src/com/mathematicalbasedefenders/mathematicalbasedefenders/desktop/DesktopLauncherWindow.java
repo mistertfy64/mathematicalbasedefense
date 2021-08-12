@@ -1,7 +1,7 @@
 package com.mathematicalbasedefenders.mathematicalbasedefenders.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.mathematicalbasedefenders.mathematicalbasedefenders.MathematicalBaseDefenders;
 
 import javax.swing.*;
@@ -32,18 +32,20 @@ public class DesktopLauncherWindow extends JFrame {
         launchButton.setBounds(120, 480, 560, 60);
         launchButton.setText("Launch Game");
         launchButton.addActionListener(event -> {
-            LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+            Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 
-            config.title = "Mathematical Base Defenders";
-            config.width = 1920;
-            config.height = 1080;
-            config.samples = 3;
-            config.foregroundFPS = 60;
-            config.backgroundFPS = 60;
-
-            new LwjglApplication(new MathematicalBaseDefenders(), config);
+            config.setTitle("Mathematical Base Defenders");
+            config.setResizable(true);
+            config.setWindowSizeLimits(1024,768,-1,-1);
+            config.setBackBufferConfig(8,8,8,8,16,0,3);
+            config.setForegroundFPS(60);
+            config.setIdleFPS(60);
 
             frame.dispose();
+
+            new Lwjgl3Application(new MathematicalBaseDefenders(), config);
+
+
         });
 
         // add stuff to the panel

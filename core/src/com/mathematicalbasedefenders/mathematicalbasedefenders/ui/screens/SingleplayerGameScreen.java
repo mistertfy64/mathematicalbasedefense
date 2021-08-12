@@ -1,6 +1,7 @@
 package com.mathematicalbasedefenders.mathematicalbasedefenders.ui.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,6 +16,7 @@ import com.mathematicalbasedefenders.mathematicalbasedefenders.core.Core;
 import com.mathematicalbasedefenders.mathematicalbasedefenders.core.Log;
 import com.mathematicalbasedefenders.mathematicalbasedefenders.game.Game;
 import com.mathematicalbasedefenders.mathematicalbasedefenders.game.Tile;
+import org.json.JSONException;
 
 import static com.mathematicalbasedefenders.mathematicalbasedefenders.MathematicalBaseDefenders.*;
 
@@ -28,8 +30,6 @@ public class SingleplayerGameScreen implements Screen {
     private final Stage singleplayerScreenTextStage;
     private final Stage singleplayerScreenSpecialComputerModernFontStage;
     private final Stage singleplayerScreenProblemSpecialComputerModernFontStage;
-
-    double startTime = TimeUtils.millis();
 
 
     public SingleplayerGameScreen(MathematicalBaseDefenders mathematicalBaseDefenders) {
@@ -51,23 +51,23 @@ public class SingleplayerGameScreen implements Screen {
         // stage
         singleplayerScreenStage = new Stage(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
         singleplayerScreenStage.setViewport(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
-        singleplayerScreenStage.getCamera().position.set(1920 / 2, 1080 / 2, 0);
+        singleplayerScreenStage.getCamera().position.set(960, 540, 0);
         // text stage
         singleplayerScreenTextStage = new Stage(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
         singleplayerScreenTextStage.setViewport(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
-        singleplayerScreenTextStage.getCamera().position.set(1920 / 2, 1080 / 2, 0);
+        singleplayerScreenTextStage.getCamera().position.set(960, 540, 0);
         // SpecialComputerModernFont stages
         singleplayerScreenSpecialComputerModernFontStage = new Stage(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
         singleplayerScreenSpecialComputerModernFontStage.setViewport(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
-        singleplayerScreenSpecialComputerModernFontStage.getCamera().position.set(1920 / 2, 1080 / 2, 0);
+        singleplayerScreenSpecialComputerModernFontStage.getCamera().position.set(960, 540, 0);
 
         singleplayerScreenProblemSpecialComputerModernFontStage = new Stage(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
         singleplayerScreenProblemSpecialComputerModernFontStage.setViewport(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
-        singleplayerScreenProblemSpecialComputerModernFontStage.getCamera().position.set(1920 / 2, 1080 / 2, 0);
+        singleplayerScreenProblemSpecialComputerModernFontStage.getCamera().position.set(960, 540, 0);
         // global stage
         core.globalStage = new Stage(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
         core.globalStage.setViewport(new ExtendViewport(1920, 1080, (MathematicalBaseDefenders.core.orthographicCamera)));
-        core.globalStage.getCamera().position.set(1920 / 2, 1080 / 2, 0);
+        core.globalStage.getCamera().position.set(960, 540, 0);
 
 
         // set stages
@@ -102,12 +102,21 @@ public class SingleplayerGameScreen implements Screen {
         MathematicalBaseDefenders.renderer.addActorToCurrentStage(core.sendButton, "sendButton");
         MathematicalBaseDefenders.renderer.addActorToCurrentStage(core.base, "base");
 
+        // stats
 
+        // right side of grid
         MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Score", "scoreIndicatorText", 36, Color.BLACK, 1192, 585);
         MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("0", "currentScoreText", 64, Color.BLACK, 1190, 530);
-        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Time: 0ms", "timeText", 36, Color.BLACK, 1190, 450);
-        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Health: 100%", "healthText", 36, Color.BLACK, 1190, 410);
-        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Enemies: 0", "enemiesText", 36, Color.BLACK, 1190, 370);
+        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Time: 0ms", "timeText", 32, Color.BLACK, 1190, 450);
+        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Health: 100%", "healthText", 32, Color.BLACK, 1190, 410);
+        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Enemies: 0", "enemiesText", 32, Color.BLACK, 1190, 370);
+
+        // left side of grid
+        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("", "comboText", 36, Color.BLACK, 723-MathematicalBaseDefenders.renderer.getWidthOfText("", 36),585);
+        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("Actions Per Minute", "actionsPerMinuteIndicatorText", 20, Color.BLACK, 723-MathematicalBaseDefenders.renderer.getWidthOfText("Actions Per Minute", 20),545);
+        MathematicalBaseDefenders.renderer.addTextToCurrentTextStage("0", "actionsPerMinuteText", 36, Color.BLACK, 723-MathematicalBaseDefenders.renderer.getWidthOfText("0", 32),505);
+
+        // variables
         MathematicalBaseDefenders.renderer.addTextToCurrentTextStage(" = ?", "valueOfVariableAText", 24, Color.BLACK, 1205, 335);
         MathematicalBaseDefenders.renderer.addTextToCurrentTextStage(" = ?", "valueOfVariableBText", 24, Color.BLACK, 1205, 308);
         MathematicalBaseDefenders.renderer.addTextToCurrentTextStage(" = ?", "valueOfVariableCText", 24, Color.BLACK, 1205, 275);
@@ -116,7 +125,6 @@ public class SingleplayerGameScreen implements Screen {
         MathematicalBaseDefenders.renderer.addTextToCurrentTextStage(" = ?", "valueOfVariableXText", 24, Color.BLACK, 1205, 185);
         MathematicalBaseDefenders.renderer.addTextToCurrentTextStage(" = ?", "valueOfVariableYText", 24, Color.BLACK, 1205, 155);
         MathematicalBaseDefenders.renderer.addTextToCurrentTextStage(" = ?", "valueOfVariableZText", 24, Color.BLACK, 1205, 125);
-
 
     }
 
@@ -143,6 +151,7 @@ public class SingleplayerGameScreen implements Screen {
     public void render(float delta) {
 
 
+
         // clear stuff first
 
         Gdx.gl.glClearColor(14f / 15f, 14f / 15f, 14f / 15f, 1);
@@ -167,13 +176,63 @@ public class SingleplayerGameScreen implements Screen {
         MathematicalBaseDefenders.core.processGlobalLogic();
 
         // process logic
+        for (int i = 0; i < 23; i++) {
+            int keyToCheck = 10000000;
+            try {
+                keyToCheck = core.configurationAsJSONObject.getJSONObject("inputs").getInt(core.keybindKeys[i]);
+            } catch (JSONException jsonException) {
+                jsonException.printStackTrace();
+            }
+            if (i > 14){
+                if (Gdx.input.isKeyJustPressed(keyToCheck))
+                {
+                    MathematicalBaseDefenders.game.selectTerm(Tile.termNames[i]);
+                }
+            } else {
+                if (Gdx.input.isKeyJustPressed(keyToCheck) || Gdx.input.isKeyJustPressed(core.secondaryKeybinds[i]))
+                {
+                    MathematicalBaseDefenders.game.selectTerm(Tile.termNames[i]);
+                }
+            }
+
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            MathematicalBaseDefenders.game.sendProblem();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_DOT)){
+            MathematicalBaseDefenders.game.removeLatestSelectedPosition();
+        }
+
 
         core.shapeRenderer.setAutoShapeType(true);
         // update text here
+
+        // positions
+        MathematicalBaseDefenders.renderer.changeTextPositionOnCurrentTextStage(723-MathematicalBaseDefenders.renderer.getWidthOfText(game.currentCombo>0?game.currentCombo + " Combo":"", 36), 585, "comboText");
+        MathematicalBaseDefenders.renderer.changeTextPositionOnCurrentTextStage(723- renderer.getWidthOfText(String.format("%.2f",Game.actionsPerMinute), 36), 505,"actionsPerMinuteText");
+
+
+
+
+
+
+        // stats
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage(Float.toString(MathematicalBaseDefenders.game.score), "currentScoreText");
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage("Time: " + utilities.convertMillisecondsToColonifiedTime((TimeUtils.millis() - game.gameStartTimeInMilliseconds)), "timeText");
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage("Health: " + (MathematicalBaseDefenders.game.currentBaseHealth * 100 / MathematicalBaseDefenders.game.initialBaseHealth) + "%", "healthText");
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage("Enemies: " + MathematicalBaseDefenders.game.enemiesKilled + "/" + MathematicalBaseDefenders.game.enemiesSpawned, "enemiesText");
+
+        MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage(game.currentCombo>0?game.currentCombo + " Combo":"", "comboText");
+
+        MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage(String.format("%.2f",Game.actionsPerMinute), "actionsPerMinuteText");
+
+
+
+
+
+        // variables
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage(MathematicalBaseDefenders.game.valueOfVariableA == null ? " = ?" : " = " + MathematicalBaseDefenders.game.valueOfVariableA.getArgumentValue(), "valueOfVariableAText");
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage(MathematicalBaseDefenders.game.valueOfVariableB == null ? " = ?" : " = " + MathematicalBaseDefenders.game.valueOfVariableB.getArgumentValue(), "valueOfVariableBText");
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage(MathematicalBaseDefenders.game.valueOfVariableC == null ? " = ?" : " = " + MathematicalBaseDefenders.game.valueOfVariableC.getArgumentValue(), "valueOfVariableCText");
@@ -182,6 +241,8 @@ public class SingleplayerGameScreen implements Screen {
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage(MathematicalBaseDefenders.game.valueOfVariableX == null ? " = ?" : " = " + MathematicalBaseDefenders.game.valueOfVariableX.getArgumentValue(), "valueOfVariableXText");
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage(MathematicalBaseDefenders.game.valueOfVariableY == null ? " = ?" : " = " + MathematicalBaseDefenders.game.valueOfVariableY.getArgumentValue(), "valueOfVariableYText");
         MathematicalBaseDefenders.renderer.changeTextOnCurrentTextStage(MathematicalBaseDefenders.game.valueOfVariableZ == null ? " = ?" : " = " + MathematicalBaseDefenders.game.valueOfVariableZ.getArgumentValue(), "valueOfVariableZText");
+
+
 
         if (MathematicalBaseDefenders.game.singleplayerGameIsOver) {
             MathematicalBaseDefenders.game.singleplayerGameIsOver = false;
@@ -200,18 +261,20 @@ public class SingleplayerGameScreen implements Screen {
 
         // enemies
 
-        Long[] enemyNumbersOfEnemiesToRenderAsLongArray = MathematicalBaseDefenders.core.getEnemyNumbersToRender(MathematicalBaseDefenders.game.activeEnemies.keySet());
-        for (int i = 0; i < enemyNumbersOfEnemiesToRenderAsLongArray.length; i++) {
+        Long[] enemyNumbersOfEnemiesToRenderAsLongArray = MathematicalBaseDefenders.core.getEnemyNumbersToRender(Game.activeEnemies.keySet());
+        for (Long aLong : enemyNumbersOfEnemiesToRenderAsLongArray) {
             try {
-                MathematicalBaseDefenders.game.activeEnemies.get(enemyNumbersOfEnemiesToRenderAsLongArray[i]).render();
+                Game.activeEnemies.get(aLong).render(aLong);
             } catch (Exception exception) {
-                Log.logWarningMessage("Enemy #" + enemyNumbersOfEnemiesToRenderAsLongArray[i] + " produced an exception.");
+                Log.logWarningMessage("Enemy #" + aLong + " produced an exception.");
             }
         }
 
 
         singleplayerScreenSpriteBatch.end();
         core.shapeRenderer.end();
+
+
 
 
     }

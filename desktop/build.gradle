@@ -1,10 +1,10 @@
 targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = ["../android/assets"]
+sourceSets.main.resources.srcDirs = ["../core"]
 
-project.ext.mainClassName = "com.mathematicalbasedefense.mathematicalbasedefense.desktop.DesktopLauncher"
-project.ext.assetsDir = new File("../android/assets")
+project.ext.mainClassName = "com.mathematicalbasedefenders.mathematicalbasedefenders.desktop.DesktopLauncher"
+project.ext.assetsDir = new File("../core")
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName

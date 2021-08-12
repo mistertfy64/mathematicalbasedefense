@@ -220,6 +220,9 @@ public class Tile {
      * @param yPos
      */
     public void processTileClick(float xPos, float yPos) {
+
+        Game.actionsMadeInGame++;
+
         Game.tiles[getColumnOfTile(xPos)][getRowOfTile(yPos)].selected = !Game.tiles[getColumnOfTile(xPos)][getRowOfTile(yPos)].selected;
 
         Game.tiles[getColumnOfTile(xPos)][getRowOfTile(yPos)] = new Tile(getColumnOfTile(xPos), getRowOfTile(yPos), Game.tiles[getColumnOfTile(xPos)][getRowOfTile(yPos)].term, Game.tiles[getColumnOfTile(xPos)][getRowOfTile(yPos)].selected);
@@ -336,6 +339,29 @@ public class Tile {
         throw new IllegalArgumentException("Unknown term name: " + name);
     }
 
+    public static void forceSelect(int x, int y, boolean countAction) {
+
+        Game.actionsMadeInGame += countAction ? 1 : 0;
+
+        Game.tiles[x][y].selected = !Game.tiles[x][y].selected;
+
+        Game.tiles[x][y] = new Tile(x, y, Game.tiles[x][y].term, Game.tiles[x][y].selected);
+        if (Game.tiles[x][y].selected) {
+            // selected is now true
+            Game.currentProblemAsArrayList.add(changeTermNameToString(Game.tiles[x][y].term));
+            Game.currentTilesInProblem.add(Game.tiles[x][y]);
+            MathematicalBaseDefenders.renderer.renderProblemAsSpecialComputerModernFont(MathematicalBaseDefenders.game.convertProblemArrayToString(Game.currentProblemAsArrayList, true), 150, 680, 32, true, false);
+        } else {
+            // selected is now false
+            for (int i = 0; i < Game.currentProblemAsArrayList.size(); i++) {
+                if (Game.currentTilesInProblem.get(i).getColumn() == x && Game.currentTilesInProblem.get(i).getRow() == y) {
+                    Game.currentProblemAsArrayList.remove(i);
+                    Game.currentTilesInProblem.remove(i);
+                }
+            }
+            MathematicalBaseDefenders.renderer.renderProblemAsSpecialComputerModernFont(MathematicalBaseDefenders.game.convertProblemArrayToString(Game.currentProblemAsArrayList, true), 150, 680, 32, true, false);
+        }
+    }
 
     // getters
     public float getXPosition() {
