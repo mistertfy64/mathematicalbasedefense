@@ -1,10 +1,10 @@
-![](https://mistertfy64.com/files/mathematicalbasedefenderslogo.png=256x256)
+![](https://mistertfy64.com/files/mathematicalbasedefenderslogo.png)
 
 # Mathematical Base Defenders
 
 **CURRENTLY IN DEVELOPMENT** However, you can download the source code and build an executable yourself to try it out.
 
-<a href="https://mathematicalbasedefenders.com">Website</a>
+<a href="https://mathematicalbasedefenders.com">Website **REGISTER NOW FOR FREE PERMANENT TESTER RANK!!!**</a>
 
 ## Play
 There are enemies (squares with numbers on it) coming to your base.
